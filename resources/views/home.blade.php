@@ -15,9 +15,6 @@
                     @endif
 
                     {{ __('You are logged in!') }}
-                    @can('is_admin')
-                        <a href="{{  route('admin') }}">Admin</a>
-                    @endcan
                 </div>
             </div>
         </div>
