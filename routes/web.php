@@ -41,5 +41,8 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'roles'], function () {
     Route::get('list' , 'RolesController@index')->name('list.roles');
     Route::get('create' , 'RolesController@create')->name('create.roles');
-    // Route::post('store' , 'AdminUserController@store')->name('store.users');
+    Route::post('store' , 'RolesController@store')->name('store.roles');
+    Route::get('edit/{role}' , 'RolesController@edit')->name('edit.roles');
+    Route::put('update/{role}' , 'RolesController@update')->name('update.roles');
+    Route::get('delete/{role}' , 'RolesController@destroy')->name('destroy.roles');
 });

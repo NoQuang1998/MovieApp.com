@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Permissions;
 use App\Roles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
@@ -38,18 +39,18 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Roles  $roles
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Roles $roles)
-    {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->except('permission_id');
+            $role = Roles::create($data);
+            // permission
+            $role->permission()->attach($request->permission_id);
+            DB::commit();
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+            DB::rollback();
+        }
+        return redirect()->route('list.roles');
     }
 
     /**
@@ -58,9 +59,11 @@ class RolesController extends Controller
      * @param  \App\Roles  $roles
      * @return \Illuminate\Http\Response
      */
-    public function edit(Roles $roles)
+    public function edit(Roles $role)
     {
-        //
+        $permissionParents = Permissions::all()->where('parent_id', 0);
+        $permission_checked = $role->permission()->get();
+        return view('roles.edit', compact('role', 'permissionParents', 'permission_checked'));
     }
 
     /**
@@ -70,9 +73,12 @@ class RolesController extends Controller
      * @param  \App\Roles  $roles
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Roles $roles)
+    public function update(Request $request, Roles $role)
     {
-        //
+        $data = $request->except('permission_id');
+        $role->update($data);
+        $role->permission()->sync($request->permission_id);
+        return redirect()->route('list.roles');
     }
 
     /**
@@ -81,8 +87,9 @@ class RolesController extends Controller
      * @param  \App\Roles  $roles
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Roles $roles)
+    public function destroy(Roles $role)
     {
-        //
+        $role->delete();
+        return redirect()->route('list.roles');
     }
 }

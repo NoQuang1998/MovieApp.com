@@ -41,7 +41,7 @@ class AdminUserController extends Controller
         }catch(Exception $e){
             DB::rollback();
             Log::error('Message :'.$e->getMessage() . '---- Line : '. $e->getLine());
-            echo "error : ". $e->getMessage();  
+            echo "error : ". $e->getMessage();
        }
         // c1: foreach create
         // foreach($role_id as $id){
