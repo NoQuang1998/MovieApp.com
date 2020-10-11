@@ -52,4 +52,17 @@ class AdminUserController extends Controller
         // }
         return redirect()->route('list.users');
     }
+
+    public function edit(User $user){
+        $roles = Roles::all();
+        $roleChecked = $user->roles()->get();
+        return view('users.edit', compact( 'roles','roleChecked', 'user') );
+    }
+
+    public function update(User $user, Request $request){
+        $data = $request->except('role_id');
+        $user->update($data);
+        $user->roles()->sync($request->role_id);
+        return redirect()->route('list.users');
+    }
 }

@@ -34,8 +34,10 @@ Route::get('/shop', function(){
 
 Route::group(['prefix' => 'users'], function () {
     Route::get('list' , 'AdminUserController@index')->name('list.users');
-    Route::get('create' , 'AdminUserController@create')->name('create.users');
+    Route::get('create' , 'AdminUserController@create')->name('create.users')->middleware('can:add_user');
     Route::post('store' , 'AdminUserController@store')->name('store.users');
+    Route::get('edit/{user}' , 'AdminUserController@edit')->name('edit.users');
+    Route::put('update/{user}', 'AdminUserController@update')->name('update.users');
 });
 
 Route::group(['prefix' => 'roles'], function () {
@@ -45,4 +47,4 @@ Route::group(['prefix' => 'roles'], function () {
     Route::get('edit/{role}' , 'RolesController@edit')->name('edit.roles');
     Route::put('update/{role}' , 'RolesController@update')->name('update.roles');
     Route::get('delete/{role}' , 'RolesController@destroy')->name('destroy.roles');
-});
+}); 
